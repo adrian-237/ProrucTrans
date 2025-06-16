@@ -1,3 +1,6 @@
+// server.js (Final Version with All Features, Ready for Deployment)
+
+// --- 1. Import Dependencies ---
 const express = require('express');
 const { Sequelize, DataTypes } = require('sequelize');
 const bodyParser = require('body-parser');
@@ -5,32 +8,46 @@ const cors = require('cors');
 const path = require('path');
 const session = require('express-session');
 
+// --- 2. Initialize the App ---
 const app = express();
+// Use the PORT environment variable from the hosting service, or 3000 for local development
 const PORT = process.env.PORT || 3000;
 
+// --- 3. Configure Middleware ---
 app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+// --- 4. CONFIGURE SESSION ---
 app.use(session({
-    secret: 'a-very-strong-and-secret-key-for-transportio',
+    // In a real production app, move this secret to an environment variable
+    secret: process.env.SESSION_SECRET || 'a-very-strong-and-secret-key-for-proructrans',
     resave: false,
     saveUninitialized: false,
     cookie: {
-        secure: false,
-        httpOnly: true,
-        maxAge: 1000 * 60 * 60 * 24
+        // In production, set 'secure' to true if you are using HTTPS
+        secure: process.env.NODE_ENV === 'production',
+        httpOnly: true, // Prevents client-side JS from reading the cookie
+        maxAge: 1000 * 60 * 60 * 24 // Cookie expires in 24 hours
     }
 }));
 
+
+// --- 5. Hardcoded Admin Credentials ---
 const ADMIN_USER = {
     username: 'admin',
     password: 'admin'
 };
 
+
+// --- 6. Database Connection & Models ---
+// This configuration works for both local development and deployment on Render
+const dbPath = path.join(process.env.DATABASE_PATH || __dirname, 'proructrans.db');
+console.log(`Using database at: ${dbPath}`);
+
 const sequelize = new Sequelize({
   dialect: 'sqlite',
-  storage: 'transportio.db'
+  storage: dbPath // Use the dynamic path
 });
 
 const Order = sequelize.define('Order', {
@@ -44,6 +61,7 @@ const Order = sequelize.define('Order', {
   status: { type: DataTypes.STRING, defaultValue: 'Pending' },
   tracking_id: {
     type: DataTypes.STRING
+    // The `unique: true` constraint is removed to prevent database errors on creation.
   }
 });
 
@@ -54,6 +72,8 @@ const Message = sequelize.define('Message', {
   message: { type: DataTypes.TEXT, allowNull: false },
 });
 
+
+// --- 7. AUTHENTICATION MIDDLEWARE & ROUTES ---
 const requireLogin = (req, res, next) => {
     if (req.session && req.session.isLoggedIn) {
         return next();
@@ -82,13 +102,16 @@ app.post('/api/logout', (req, res) => {
     });
 });
 
+
+// --- 8. API ROUTES ---
+
+// === ORDER ROUTES ===
 app.post('/api/orders', async (req, res) => {
   try {
     const newOrder = await Order.create(req.body);
-
+    // Generate and save the unique tracking ID after creation
     newOrder.tracking_id = `PRT-${newOrder.id}`;
     await newOrder.save();
-
     res.status(201).json({ message: 'Order placed successfully!', order: newOrder });
   } catch (error) {
     console.error("Error creating order:", error);
@@ -99,21 +122,20 @@ app.post('/api/orders', async (req, res) => {
 app.get('/api/track/:trackingId', async (req, res) => {
     try {
       const { trackingId } = req.params;
-      const order = await Order.findOne({
+      const order = await Order.findOne({ 
         where: { tracking_id: trackingId.toUpperCase() }
       });
-
+  
       if (!order) {
         return res.status(404).json({ message: 'No shipment found with this tracking ID.' });
       }
-
+  
       const trackingInfo = {
         tracking_id: order.tracking_id,
         recipient_address: order.recipient_address,
         status: order.status,
         updatedAt: order.updatedAt
       };
-
       res.status(200).json(trackingInfo);
     } catch (error) {
       console.error("Error fetching tracking info:", error);
@@ -130,6 +152,7 @@ app.get('/api/orders', requireLogin, async (req, res) => {
     res.status(500).json({ message: 'Error fetching orders.', error: error });
   }
 });
+
 app.put('/api/orders/:id', requireLogin, async (req, res) => {
     try {
       const { id } = req.params;
@@ -146,6 +169,7 @@ app.put('/api/orders/:id', requireLogin, async (req, res) => {
       res.status(500).json({ message: 'Error updating order.', error: error });
     }
 });
+
 app.delete('/api/orders/:id', requireLogin, async (req, res) => {
     try {
         const { id } = req.params;
@@ -161,6 +185,8 @@ app.delete('/api/orders/:id', requireLogin, async (req, res) => {
     }
 });
 
+
+// === MESSAGE ROUTES ===
 app.post('/api/messages', async (req, res) => {
   try {
     const newMessage = await Message.create(req.body);
@@ -170,6 +196,7 @@ app.post('/api/messages', async (req, res) => {
     res.status(500).json({ message: 'Error sending message.', error: error.message });
   }
 });
+
 app.get('/api/messages', requireLogin, async (req, res) => {
   try {
     const messages = await Message.findAll({ order: [['createdAt', 'DESC']] });
@@ -179,6 +206,7 @@ app.get('/api/messages', requireLogin, async (req, res) => {
     res.status(500).json({ message: 'Error fetching messages.', error: error });
   }
 });
+
 app.delete('/api/messages/:id', requireLogin, async (req, res) => {
     try {
         const { id } = req.params;
@@ -194,16 +222,23 @@ app.delete('/api/messages/:id', requireLogin, async (req, res) => {
     }
 });
 
+
+// --- 9. SERVE STATIC & PROTECTED FILES ---
+// This specific route protects the admin panel
 app.get('/admin.html', requireLogin, (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'admin.html'));
 });
 
+// This serves all other static files from the 'public' directory
 app.use(express.static(path.join(__dirname, 'public')));
 
+
+// --- 10. Start the Server ---
 const startServer = async () => {
   try {
+    // This syncs the models with the database, creating tables if they don't exist.
     await sequelize.sync();
-    console.log('Database file "transportio.db" is synced and ready.');
+    console.log('Database file "proructrans.db" is synced and ready.');
     app.listen(PORT, () => {
       console.log(`Server is running on http://localhost:${PORT}`);
     });
