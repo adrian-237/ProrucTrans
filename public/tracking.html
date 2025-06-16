@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Track Shipment - ProrucTrans</title>
+    <link rel="stylesheet" href="./assets/css/style.css" />
+    <!-- Other head content from your site -->
+    <style>
+      .page-header {
+        background-color: var(--primary-yellow);
+        padding-block: 80px 40px;
+        text-align: center;
+        color: var(--dark-charcoal);
+      }
+      .page-header .page-title {
+        font-size: var(--fs-2);
+        color: var(--dark-charcoal);
+      }
+      .tracking-section {
+        text-align: center;
+      }
+      .tracking-form {
+        max-width: 500px;
+        margin: 30px auto;
+        display: flex;
+        gap: 10px;
+      }
+      .tracking-form .input-field {
+        text-align: center;
+      }
+      #tracking-results {
+        margin-top: 40px;
+        padding: 30px;
+        border: 1px solid var(--plutinum);
+        display: none;
+        text-align: left;
+        max-width: 600px;
+        margin-inline: auto;
+      }
+      #tracking-results h3 {
+        color: var(--dark-charcoal);
+        margin-bottom: 20px;
+      }
+      #tracking-results p {
+        margin-bottom: 10px;
+      }
+      #tracking-results .status {
+        font-weight: var(--fw-600);
+        font-size: var(--fs-5);
+      }
+      #tracking-error {
+        color: hsl(353, 86%, 52%);
+        margin-top: 20px;
+        display: none;
+      }
+    </style>
+  </head>
+  <body id="top">
+    <!-- Re-use your site's header -->
+    <header class="header" data-header>
+      <div class="container">
+        <h1>
+          <a href="/index.html" class="logo"
+            ><img src="./assets/images/truck.png" /> Proruc Trans</a
+          >
+        </h1>
+
+        <nav class="navbar" data-navbar>
+          <div class="navbar-top">
+            <a href="index.html" class="logo">ProrucTrans</a>
+
+            <button
+              class="nav-close-btn"
+              aria-label="Clsoe menu"
+              data-nav-toggler
+            >
+              <ion-icon name="close-outline"></ion-icon>
+            </button>
+          </div>
+
+          <ul class="navbar-list">
+            <li class="navbar-item">
+              <a href="index.html" class="navbar-link" data-nav-link>
+                <span class="span">Home</span>
+                <ion-icon name="chevron-forward"></ion-icon>
+              </a>
+            </li>
+
+            <li class="navbar-item">
+              <a href="/index.html#about" class="navbar-link" data-nav-link>
+                <span class="span">About Us</span>
+                <ion-icon name="chevron-forward"></ion-icon>
+              </a>
+            </li>
+
+            <li class="navbar-item">
+              <a href="/services.html" class="navbar-link" data-nav-link>
+                <span class="span">Services</span>
+                <ion-icon name="chevron-forward"></ion-icon>
+              </a>
+            </li>
+
+            <li class="navbar-item">
+              <a href="./index.html#blog" class="navbar-link" data-nav-link>
+                <span class="span">News</span>
+                <ion-icon name="chevron-forward"></ion-icon>
+              </a>
+            </li>
+
+            <li class="navbar-item">
+              <a href="./tracking.html" class="navbar-link" data-nav-link>
+                <span class="span">Tracking</span>
+                <ion-icon name="chevron-forward"></ion-icon>
+              </a>
+            </li>
+
+            <li class="navbar-item">
+              <a href="./contact.html" class="navbar-link" data-nav-link>
+                <span class="span">Contact</span>
+                <ion-icon name="chevron-forward"></ion-icon>
+              </a>
+            </li>
+          </ul>
+        </nav>
+
+        <div class="header-contact">
+          <div>
+            <p class="contact-label">Contact Us in Moldova</p>
+            <a href="tel:+37369062045" class="contact-number"
+              >+373 69 062 045</a
+            >
+          </div>
+
+          <div class="contact-icon">
+            <ion-icon name="call-outline"></ion-icon>
+          </div>
+        </div>
+
+        <button class="nav-open-btn" aria-label="Open menu" data-nav-toggler>
+          <ion-icon name="menu-outline"></ion-icon>
+        </button>
+
+        <div class="overlay" data-nav-toggler data-overlay></div>
+      </div>
+    </header>
+
+    <main>
+      <article>
+        <section class="page-header">
+          <div class="container">
+            <h1 class="h1 page-title">Track Your Shipment</h1>
+          </div>
+        </section>
+
+        <section class="section tracking-section">
+          <div class="container">
+            <p class="section-text">
+              Enter the tracking ID provided to you to see the current status of
+              your shipment.
+            </p>
+            <form id="tracking-form" class="tracking-form">
+              <input
+                type="text"
+                name="trackingId"
+                placeholder="Enter Tracking ID (e.g., PRT-1)"
+                required
+                class="input-field"
+              />
+              <button type="submit" class="btn">Track</button>
+            </form>
+
+            <p id="tracking-error"></p>
+
+            <div id="tracking-results">
+              <h3>Shipment Status</h3>
+              <p>
+                <strong>Tracking ID:</strong>
+                <span id="result-tracking-id"></span>
+              </p>
+              <p>
+                <strong>Status:</strong>
+                <span id="result-status" class="status"></span>
+              </p>
+              <p>
+                <strong>Destination:</strong>
+                <span id="result-destination"></span>
+              </p>
+              <p>
+                <strong>Last Updated:</strong>
+                <span id="result-last-updated"></span>
+              </p>
+            </div>
+          </div>
+        </section>
+      </article>
+    </main>
+
+    <!-- Re-use your site's footer -->
+    <footer class="footer"><!-- ... Full footer ... --></footer>
+
+    <!-- JavaScript for this page -->
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const trackingForm = document.getElementById("tracking-form");
+        const resultsDiv = document.getElementById("tracking-results");
+        const errorP = document.getElementById("tracking-error");
+
+        trackingForm.addEventListener("submit", async (e) => {
+          e.preventDefault();
+          resultsDiv.style.display = "none";
+          errorP.style.display = "none";
+
+          const trackingId = e.target.trackingId.value.trim().toUpperCase();
+          if (!trackingId) return;
+
+          try {
+            const response = await fetch(`/api/track/${trackingId}`);
+            const data = await response.json();
+
+            if (!response.ok) {
+              errorP.textContent = data.message || "An error occurred.";
+              errorP.style.display = "block";
+              return;
+            }
+
+            document.getElementById("result-tracking-id").textContent =
+              data.tracking_id;
+            document.getElementById("result-status").textContent = data.status;
+            document.getElementById("result-destination").textContent =
+              data.recipient_address;
+            document.getElementById("result-last-updated").textContent =
+              new Date(data.updatedAt).toLocaleString();
+
+            resultsDiv.style.display = "block";
+          } catch (err) {
+            errorP.textContent =
+              "Could not connect to the server. Please try again later.";
+            errorP.style.display = "block";
+          }
+        });
+      });
+    </script>
+  </body>
+</html>

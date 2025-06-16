@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Our Services - ProrucTrans</title>
+
+    <link rel="shortcut icon" href="./favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="./assets/css/style.css" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Rubik:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      /* --- Base Styles --- */
+      .page-header {
+        background-color: var(--primary-yellow);
+        padding-block: 80px 40px;
+        text-align: center;
+        color: var(--dark-charcoal);
+      }
+
+      .page-header .page-title {
+        font-size: var(--fs-2);
+        color: var(--dark-charcoal);
+      }
+
+      .page-header .breadcrumb {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        font-size: var(--fs-7);
+      }
+
+      .page-header .breadcrumb a {
+        color: var(--dark-charcoal);
+        transition: var(--transition);
+      }
+
+      .page-header .breadcrumb a:hover {
+        text-decoration: underline;
+      }
+
+      .service-detail-section {
+        padding-block: 60px;
+      }
+
+      .service-detail-card {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 30px;
+        align-items: center;
+        margin-bottom: 50px;
+        border-bottom: 1px solid var(--plutinum);
+        padding-bottom: 50px;
+      }
+
+      @media (min-width: 768px) {
+        .service-detail-card {
+          grid-template-columns: 0.4fr 1fr;
+          gap: 50px;
+        }
+      }
+
+      .service-detail-card:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+        padding-bottom: 0;
+      }
+
+      .service-detail-card .card-icon img {
+        margin-inline: auto;
+      }
+
+      .service-detail-card .h3.card-title {
+        color: var(--dark-charcoal);
+      }
+
+      /* --- NEW: Smooth Animations --- */
+
+      /* Animation Keyframes */
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* Apply page-load animations */
+      .page-header,
+      .order {
+        animation: fadeInUp 1s ease-out forwards;
+        opacity: 0;
+      }
+
+      .service-detail-card {
+        animation: fadeInUp 1s ease-out forwards;
+        opacity: 0;
+        transition: transform 0.4s ease, box-shadow 0.4s ease;
+      }
+
+      .order {
+        animation-delay: 0.8s;
+      }
+
+      /* Make form appear last */
+
+      /* Stagger the service card animations for a cascading effect */
+      .service-detail-section .service-detail-card:nth-of-type(1) {
+        animation-delay: 0.2s;
+      }
+
+      .service-detail-section .service-detail-card:nth-of-type(2) {
+        animation-delay: 0.3s;
+      }
+
+      .service-detail-section .service-detail-card:nth-of-type(3) {
+        animation-delay: 0.4s;
+      }
+
+      .service-detail-section .service-detail-card:nth-of-type(4) {
+        animation-delay: 0.5s;
+      }
+
+      .service-detail-section .service-detail-card:nth-of-type(5) {
+        animation-delay: 0.6s;
+      }
+
+      .service-detail-section .service-detail-card:nth-of-type(6) {
+        animation-delay: 0.7s;
+      }
+
+      /* Add hover effect to service cards */
+      .service-detail-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 15px 30px -12px hsla(0, 0%, 0%, 0.1);
+      }
+
+      /* Hover effect for the card icon */
+      .service-detail-card .card-icon {
+        transition: transform 0.4s ease;
+      }
+
+      .service-detail-card:hover .card-icon {
+        transform: scale(1.05);
+      }
+
+      /* Interactive animations for form fields and buttons */
+      .input-field {
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+      }
+
+      .input-field:focus {
+        border-color: var(--orange-soda);
+        /* Assumes --orange-soda is defined in style.css */
+        box-shadow: 0 0 0 4px hsla(24, 100%, 50%, 0.15);
+      }
+
+      .btn {
+        transition: all 0.3s ease;
+      }
+
+      .btn:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 10px 20px -8px hsla(24, 100%, 50%, 0.4);
+      }
+    </style>
+  </head>
+
+  <body id="top">
+    <header class="header" data-header>
+      <div class="container">
+        <h1>
+          <a href="/index.html" class="logo"
+            ><img src="./assets/images/truck.png" /> Proruc Trans</a
+          >
+        </h1>
+
+        <nav class="navbar" data-navbar>
+          <div class="navbar-top">
+            <a href="index.html" class="logo">ProrucTrans</a>
+
+            <button
+              class="nav-close-btn"
+              aria-label="Clsoe menu"
+              data-nav-toggler
+            >
+              <ion-icon name="close-outline"></ion-icon>
+            </button>
+          </div>
+
+          <ul class="navbar-list">
+            <li class="navbar-item">
+              <a href="index.html" class="navbar-link" data-nav-link>
+                <span class="span">Home</span>
+                <ion-icon name="chevron-forward"></ion-icon>
+              </a>
+            </li>
+
+            <li class="navbar-item">
+              <a href="/index.html#about" class="navbar-link" data-nav-link>
+                <span class="span">About Us</span>
+                <ion-icon name="chevron-forward"></ion-icon>
+              </a>
+            </li>
+
+            <li class="navbar-item">
+              <a href="/services.html" class="navbar-link" data-nav-link>
+                <span class="span">Services</span>
+                <ion-icon name="chevron-forward"></ion-icon>
+              </a>
+            </li>
+
+            <li class="navbar-item">
+              <a href="./index.html#blog" class="navbar-link" data-nav-link>
+                <span class="span">News</span>
+                <ion-icon name="chevron-forward"></ion-icon>
+              </a>
+            </li>
+
+            <li class="navbar-item">
+              <a href="./tracking.html" class="navbar-link" data-nav-link>
+                <span class="span">Tracking</span>
+                <ion-icon name="chevron-forward"></ion-icon>
+              </a>
+            </li>
+
+            <li class="navbar-item">
+              <a href="./contact.html" class="navbar-link" data-nav-link>
+                <span class="span">Contact</span>
+                <ion-icon name="chevron-forward"></ion-icon>
+              </a>
+            </li>
+          </ul>
+        </nav>
+
+        <div class="header-contact">
+          <div>
+            <p class="contact-label">Contact Us in Moldova</p>
+            <a href="tel:+37369062045" class="contact-number"
+              >+373 69 062 045</a
+            >
+          </div>
+
+          <div class="contact-icon">
+            <ion-icon name="call-outline"></ion-icon>
+          </div>
+        </div>
+
+        <button class="nav-open-btn" aria-label="Open menu" data-nav-toggler>
+          <ion-icon name="menu-outline"></ion-icon>
+        </button>
+
+        <div class="overlay" data-nav-toggler data-overlay></div>
+      </div>
+    </header>
+
+    <main>
+      <article>
+        <section class="page-header" aria-label="page header">
+          <div class="container">
+            <h1 class="h1 page-title">Our Services</h1>
+            <p class="breadcrumb">
+              <a href="./index.html">Home</a> / <span>Services</span>
+            </p>
+          </div>
+        </section>
+
+        <section
+          class="section service-detail-section"
+          id="service-details"
+          aria-label="service details"
+        >
+          <div class="container">
+            <div class="service-detail-card">
+              <div class="card-icon">
+                <img
+                  src="./assets/images/service-icon-2.png"
+                  width="111"
+                  height="90"
+                  loading="lazy"
+                  alt="Road Freight Truck"
+                />
+              </div>
+              <div class="card-content">
+                <h3 class="h3 card-title">Road Freight</h3>
+                <p class="card-text">
+                  As the backbone of our operations, our road freight service
+                  offers unparalleled connectivity across Moldova and Europe. We
+                  manage full truckload (FTL) and less-than-truckload (LTL)
+                  shipments, ensuring your goods are transported efficiently and
+                  on schedule, whether for domestic distribution or
+                  international transit.
+                </p>
+                <a href="./contact.html" class="btn">Request Quote</a>
+              </div>
+            </div>
+
+            <div class="service-detail-card">
+              <div class="card-icon">
+                <img
+                  src="./assets/images/service-icon-1.png"
+                  width="120"
+                  height="90"
+                  loading="lazy"
+                  alt="Air Freight Plane"
+                />
+              </div>
+              <div class="card-content">
+                <h3 class="h3 card-title">Air Freight</h3>
+                <p class="card-text">
+                  For time-critical shipments, ProrucTrans provides swift and
+                  secure air freight solutions. Leveraging our global
+                  partnerships, we connect Chișinău to major international air
+                  hubs, managing all logistics for a seamless, door-to-door
+                  experience for your high-value and perishable goods.
+                </p>
+                <a href="./contact.html" class="btn">Request Quote</a>
+              </div>
+            </div>
+
+            <div class="service-detail-card">
+              <div class="card-icon">
+                <img
+                  src="./assets/images/service-icon-3.png"
+                  width="90"
+                  height="90"
+                  loading="lazy"
+                  alt="Ocean Freight Ship"
+                />
+              </div>
+              <div class="card-content">
+                <h3 class="h3 card-title">Ocean Freight</h3>
+                <p class="card-text">
+                  Our ocean freight services offer a cost-effective solution for
+                  large-volume international shipping. We coordinate full
+                  container loads (FCL) and less-than-container loads (LCL)
+                  through key European ports like Constanța and Odesa, ensuring
+                  your cargo crosses the globe reliably.
+                </p>
+                <a href="./contact.html" class="btn">Request Quote</a>
+              </div>
+            </div>
+
+            <div class="service-detail-card">
+              <div class="card-icon">
+                <img
+                  src="./assets/images/service-icon-5.png"
+                  width="95"
+                  height="90"
+                  loading="lazy"
+                  alt="Warehouse with boxes"
+                />
+              </div>
+              <div class="card-content">
+                <h3 class="h3 card-title">Warehousing & Distribution</h3>
+                <p class="card-text">
+                  Our secure warehousing facilities in Moldova provide flexible
+                  storage, inventory management, and order fulfillment services.
+                  We act as your strategic distribution hub, helping to optimize
+                  your supply chain and reduce operational overhead.
+                </p>
+                <a href="./contact.html" class="btn">Request Quote</a>
+              </div>
+            </div>
+
+            <div class="service-detail-card">
+              <div class="card-icon">
+                <img
+                  src="./assets/images/feature-icon-1.png"
+                  width="102"
+                  height="121"
+                  loading="lazy"
+                  alt="Customs Document Icon"
+                />
+              </div>
+              <div class="card-content">
+                <h3 class="h3 card-title">Customs Brokerage</h3>
+                <p class="card-text">
+                  Navigating customs can be complex. Our expert brokerage team
+                  simplifies the import and export process for you, handling all
+                  necessary documentation, duties, and compliance to ensure your
+                  shipments clear customs without delay.
+                </p>
+                <a href="./contact.html" class="btn">Request Quote</a>
+              </div>
+            </div>
+
+            <div class="service-detail-card">
+              <div class="card-icon">
+                <img
+                  src="./assets/images/service-icon-6.png"
+                  width="66"
+                  height="80"
+                  loading="lazy"
+                  alt="Project Cargo Crane"
+                />
+              </div>
+              <div class="card-content">
+                <h3 class="h3 card-title">Project Cargo</h3>
+                <p class="card-text">
+                  We provide specialized transport planning for oversized,
+                  heavy-lift, or high-value project cargo. Our team designs
+                  custom logistics solutions, from route surveys to coordinating
+                  special equipment, ensuring your most challenging shipments
+                  are handled with precision and care.
+                </p>
+                <a href="./contact.html" class="btn">Request Quote</a>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="section order" id="order" aria-label="order">
+          <div class="container">
+            <div class="title-wrapper">
+              <div>
+                <p class="section-subtitle">Get Started</p>
+                <h2 class="h2 section-title">Request a Shipping Quote</h2>
+                <p class="section-text">
+                  Ready to ship? Fill out the form below and our team will
+                  provide you with a competitive quote.
+                </p>
+              </div>
+            </div>
+            <!-- **MODIFIED**: Added id="order-form" -->
+            <form action="" class="order-form" id="order-form">
+              <div class="input-wrapper">
+                <input
+                  type="text"
+                  name="sender_name"
+                  required
+                  placeholder="Your Full Name"
+                  class="input-field"
+                />
+                <input
+                  type="email"
+                  name="sender_email"
+                  required
+                  placeholder="Your Email Address"
+                  class="input-field"
+                />
+              </div>
+              <div class="input-wrapper">
+                <input
+                  type="text"
+                  name="sender_address"
+                  required
+                  placeholder="Pickup Address (From)"
+                  class="input-field"
+                />
+                <input
+                  type="text"
+                  name="recipient_address"
+                  required
+                  placeholder="Delivery Address (To)"
+                  class="input-field"
+                />
+              </div>
+              <div class="input-wrapper">
+                <select name="service_type" class="input-field">
+                  <option value="road-freight">Road Freight</option>
+                  <option value="air-freight">Air Freight</option>
+                  <option value="ocean-freight">Ocean Freight</option>
+                  <option value="customs-brokerage">Customs Brokerage</option>
+                </select>
+                <input
+                  type="number"
+                  name="package_weight"
+                  placeholder="Package Weight (kg)"
+                  class="input-field"
+                />
+              </div>
+              <textarea
+                name="package_details"
+                placeholder="Package details (e.g., dimensions, contents)"
+                class="input-field"
+              ></textarea>
+              <button type="submit" class="btn">Submit Order Request</button>
+            </form>
+          </div>
+        </section>
+      </article>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-top section">
+          <div class="footer-brand">
+            <a href="#" class="logo">ProrucTrans</a>
+            <p class="footer-text">
+              Your premier logistics partner based in Moldova, offering a wide
+              range of freight and warehousing solutions to connect your
+              business to the world.
+            </p>
+            <ul class="social-list">
+              <li>
+                <a href="#" class="social-link"
+                  ><ion-icon name="logo-facebook"></ion-icon
+                ></a>
+              </li>
+              <li>
+                <a href="#" class="social-link"
+                  ><ion-icon name="logo-twitter"></ion-icon
+                ></a>
+              </li>
+              <li>
+                <a href="#" class="social-link"
+                  ><ion-icon name="logo-instagram"></ion-icon
+                ></a>
+              </li>
+              <li>
+                <a href="#" class="social-link"
+                  ><ion-icon name="logo-youtube"></ion-icon
+                ></a>
+              </li>
+            </ul>
+          </div>
+          <ul class="footer-list">
+            <li>
+              <p class="footer-list-title">Quick Links</p>
+            </li>
+            <li><a href="./index.html#about" class="footer-link">About</a></li>
+            <li><a href="./services.html" class="footer-link">Services</a></li>
+            <li><a href="./index.html#blog" class="footer-link">News</a></li>
+            <li><a href="./contact.html" class="footer-link">Contact Us</a></li>
+          </ul>
+          <ul class="footer-list">
+            <li>
+              <p class="footer-list-title">Services</p>
+            </li>
+            <li>
+              <a href="./services.html" class="footer-link">Road Freight</a>
+            </li>
+            <li>
+              <a href="./services.html" class="footer-link">Air Freight</a>
+            </li>
+            <li>
+              <a href="./services.html" class="footer-link">Warehousing</a>
+            </li>
+            <li>
+              <a href="./services.html" class="footer-link"
+                >Customs Brokerage</a
+              >
+            </li>
+          </ul>
+          <ul class="footer-list">
+            <li>
+              <p class="footer-list-title">Community</p>
+            </li>
+            <li><a href="#" class="footer-link">Track Your Shipment</a></li>
+            <li><a href="#" class="footer-link">Privacy Policy</a></li>
+            <li><a href="#" class="footer-link">Terms & Condition</a></li>
+          </ul>
+        </div>
+        <div class="footer-bottom">
+          <p class="copyright">© 2024 ProrucTrans. All Rights Reserved.</p>
+        </div>
+      </div>
+    </footer>
+
+    <a
+      href="#top"
+      class="back-top-btn"
+      aria-label="Back to top"
+      data-back-top-btn
+    >
+      <ion-icon name="chevron-up"></ion-icon>
+    </a>
+
+    <script src="./assets/js/script.js" defer></script>
+    <script
+      type="module"
+      src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"
+    ></script>
+    <script
+      nomodule
+      src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"
+    ></script>
+
+    <!-- **NEW**: SCRIPT TO HANDLE ORDER FORM SUBMISSION -->
+    <script>
+      const orderForm = document.getElementById("order-form");
+      if (orderForm) {
+        orderForm.addEventListener("submit", async (event) => {
+          event.preventDefault();
+          const formData = new FormData(orderForm);
+          const orderData = Object.fromEntries(formData.entries());
+          try {
+            const response = await fetch("/api/orders", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(orderData),
+            });
+            const result = await response.json();
+            if (response.ok) {
+              alert("Success! Your order request has been submitted.");
+              orderForm.reset();
+            } else {
+              alert(
+                `Error: ${result.message || "Could not submit your order."}`
+              );
+            }
+          } catch (error) {
+            console.error("Failed to submit order form:", error);
+            alert("A network error occurred. Please try again later.");
+          }
+        });
+      }
+    </script>
+  </body>
+</html>

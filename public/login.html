@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Login - Transportio</title>
+    <link rel="stylesheet" href="./assets/css/style.css" />
+    <style>
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background-color: var(--cultured-2);
+      }
+
+      .login-container {
+        padding: 40px;
+        background: var(--white);
+        border-radius: 8px;
+        box-shadow: 0 4px 15px hsla(0, 0%, 0%, 0.1);
+        width: 100%;
+        max-width: 400px;
+        text-align: center;
+      }
+
+      .login-container h1 {
+        margin-bottom: 20px;
+        font-family: var(--ff-oswald);
+      }
+
+      .form-group {
+        margin-bottom: 15px;
+        text-align: left;
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 5px;
+      }
+
+      .form-group input {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid var(--gainsboro);
+        border-radius: 5px;
+      }
+
+      #error-message {
+        color: var(--radical-red);
+        margin-bottom: 15px;
+        display: none;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="login-container">
+      <h1>Admin Login</h1>
+      <p id="error-message"></p>
+      <form id="login-form">
+        <div class="form-group">
+          <label for="username">Username</label>
+          <input type="text" id="username" name="username" required />
+        </div>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password" required />
+        </div>
+        <button type="submit" class="btn btn-primary">Login</button>
+      </form>
+    </div>
+
+    <script>
+      const loginForm = document.getElementById("login-form");
+      const errorMessage = document.getElementById("error-message");
+
+      loginForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const username = e.target.username.value;
+        const password = e.target.password.value;
+        errorMessage.style.display = "none";
+
+        try {
+          const response = await fetch("/api/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ username, password }),
+          });
+
+          const result = await response.json();
+
+          if (response.ok && result.success) {
+            // If login is successful, redirect to the admin panel
+            window.location.href = "/admin.html";
+          } else {
+            errorMessage.textContent = result.message || "Login failed.";
+            errorMessage.style.display = "block";
+          }
+        } catch (error) {
+          errorMessage.textContent = "An error occurred. Please try again.";
+          errorMessage.style.display = "block";
+        }
+      });
+    </script>
+  </body>
+</html>
