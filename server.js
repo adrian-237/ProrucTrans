@@ -8,6 +8,12 @@ const session = require('express-session');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// --- THE FIX IS HERE ---
+// This tells Express to trust the headers set by a reverse proxy (like on Render, Heroku, etc.)
+// It's crucial for making secure cookies work in a deployed environment.
+app.set('trust proxy', 1); 
+// --- END FIX ---
+
 app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -17,7 +23,7 @@ app.use(session({
     resave: false,
     saveUninitialized: false,
     cookie: {
-        secure: process.env.NODE_ENV === 'production',
+        secure: process.env.NODE_ENV === 'production', // This will now work correctly
         httpOnly: true, 
         maxAge: 1000 * 60 * 60 * 24 
     }
@@ -36,6 +42,8 @@ const sequelize = new Sequelize({
   storage: dbPath
 });
 
+// The rest of your file is unchanged...
+// ... (Order and Message models, all API routes, startServer function)
 const Order = sequelize.define('Order', {
   sender_name: { type: DataTypes.STRING, allowNull: false },
   sender_email: { type: DataTypes.STRING, allowNull: false },
@@ -115,7 +123,8 @@ app.get('/api/track/:trackingId', async (req, res) => {
         updatedAt: order.updatedAt
       };
       res.status(200).json(trackingInfo);
-    } catch (error) {
+    } catch (error)
+    {
       console.error("Error fetching tracking info:", error);
       res.status(500).json({ message: 'Error fetching shipment details.' });
     }
