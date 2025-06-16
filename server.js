@@ -8,13 +8,30 @@ const session = require('express-session');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// --- THE FIX IS HERE ---
-// This tells Express to trust the headers set by a reverse proxy (like on Render, Heroku, etc.)
-// It's crucial for making secure cookies work in a deployed environment.
+// This is crucial for secure cookies to work behind a reverse proxy
 app.set('trust proxy', 1); 
-// --- END FIX ---
 
-app.use(cors());
+// --- THE CORS FIX IS HERE ---
+// More specific CORS configuration for production
+const allowedOrigins = [
+    'https://proructrans.onrender.com', // <-- VERY IMPORTANT: REPLACE WITH YOUR REAL DEPLOYED URL
+    'http://localhost:3000'
+];
+
+const corsOptions = {
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true, // Allow session cookies from the browser
+};
+
+app.use(cors(corsOptions));
+// --- END CORS FIX ---
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -23,12 +40,14 @@ app.use(session({
     resave: false,
     saveUninitialized: false,
     cookie: {
-        secure: process.env.NODE_ENV === 'production', // This will now work correctly
+        secure: process.env.NODE_ENV === 'production',
         httpOnly: true, 
-        maxAge: 1000 * 60 * 60 * 24 
+        maxAge: 1000 * 60 * 60 * 24,
+        sameSite: 'lax' // Helps with cross-site cookie issues
     }
 }));
 
+// The rest of your server.js file is unchanged...
 const ADMIN_USER = {
     username: 'admin',
     password: 'admin'
@@ -42,8 +61,6 @@ const sequelize = new Sequelize({
   storage: dbPath
 });
 
-// The rest of your file is unchanged...
-// ... (Order and Message models, all API routes, startServer function)
 const Order = sequelize.define('Order', {
   sender_name: { type: DataTypes.STRING, allowNull: false },
   sender_email: { type: DataTypes.STRING, allowNull: false },
