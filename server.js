@@ -13,13 +13,13 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(session({
-    secret: 'a-very-strong-and-secret-key-for-proructrans',
+    secret: process.env.SESSION_SECRET || 'a-very-strong-and-secret-key-for-proructrans',
     resave: false,
     saveUninitialized: false,
     cookie: {
-        secure: false,
-        httpOnly: true,
-        maxAge: 1000 * 60 * 60 * 24
+        secure: process.env.NODE_ENV === 'production',
+        httpOnly: true, 
+        maxAge: 1000 * 60 * 60 * 24 
     }
 }));
 
@@ -28,9 +28,12 @@ const ADMIN_USER = {
     password: 'admin'
 };
 
+const dbPath = path.join(process.env.DATABASE_PATH || __dirname, 'proructrans.db');
+console.log(`Using database at: ${dbPath}`);
+
 const sequelize = new Sequelize({
   dialect: 'sqlite',
-  storage: 'proructrans.db'
+  storage: dbPath
 });
 
 const Order = sequelize.define('Order', {
@@ -85,10 +88,8 @@ app.post('/api/logout', (req, res) => {
 app.post('/api/orders', async (req, res) => {
   try {
     const newOrder = await Order.create(req.body);
-
     newOrder.tracking_id = `PRT-${newOrder.id}`;
     await newOrder.save();
-
     res.status(201).json({ message: 'Order placed successfully!', order: newOrder });
   } catch (error) {
     console.error("Error creating order:", error);
@@ -99,21 +100,20 @@ app.post('/api/orders', async (req, res) => {
 app.get('/api/track/:trackingId', async (req, res) => {
     try {
       const { trackingId } = req.params;
-      const order = await Order.findOne({
+      const order = await Order.findOne({ 
         where: { tracking_id: trackingId.toUpperCase() }
       });
-
+  
       if (!order) {
         return res.status(404).json({ message: 'No shipment found with this tracking ID.' });
       }
-
+  
       const trackingInfo = {
         tracking_id: order.tracking_id,
         recipient_address: order.recipient_address,
         status: order.status,
         updatedAt: order.updatedAt
       };
-
       res.status(200).json(trackingInfo);
     } catch (error) {
       console.error("Error fetching tracking info:", error);
@@ -130,6 +130,7 @@ app.get('/api/orders', requireLogin, async (req, res) => {
     res.status(500).json({ message: 'Error fetching orders.', error: error });
   }
 });
+
 app.put('/api/orders/:id', requireLogin, async (req, res) => {
     try {
       const { id } = req.params;
@@ -146,6 +147,7 @@ app.put('/api/orders/:id', requireLogin, async (req, res) => {
       res.status(500).json({ message: 'Error updating order.', error: error });
     }
 });
+
 app.delete('/api/orders/:id', requireLogin, async (req, res) => {
     try {
         const { id } = req.params;
@@ -170,6 +172,7 @@ app.post('/api/messages', async (req, res) => {
     res.status(500).json({ message: 'Error sending message.', error: error.message });
   }
 });
+
 app.get('/api/messages', requireLogin, async (req, res) => {
   try {
     const messages = await Message.findAll({ order: [['createdAt', 'DESC']] });
@@ -179,6 +182,7 @@ app.get('/api/messages', requireLogin, async (req, res) => {
     res.status(500).json({ message: 'Error fetching messages.', error: error });
   }
 });
+
 app.delete('/api/messages/:id', requireLogin, async (req, res) => {
     try {
         const { id } = req.params;
@@ -203,7 +207,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 const startServer = async () => {
   try {
     await sequelize.sync();
-    console.log('Database file is synced and ready.');
+    console.log('Database file "proructrans.db" is synced and ready.');
     app.listen(PORT, () => {
       console.log(`Server is running on http://localhost:${PORT}`);
     });
